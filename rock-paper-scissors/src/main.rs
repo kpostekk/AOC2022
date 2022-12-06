@@ -1,45 +1,28 @@
-enum RockPaperScissors {
-    Rock,
-    Paper,
-    Scissors,
-}
-
-impl RockPaperScissors {
-    fn from_string(pat: String) -> Option<RockPaperScissors> {
-        if vec!["A", "X"].contains(&pat.as_str()) {
-            return Some(RockPaperScissors::Rock);
-        } else if vec!["B", "Y"].contains(&pat.as_str()) {
-            return Some(RockPaperScissors::Paper);
-        } else if vec!["C", "Z"].contains(&pat.as_str()) {
-            return Some(RockPaperScissors::Scissors);
-        } else {
-            return None;
-        }
-    }
-}
-
-struct Round {
-    yours: RockPaperScissors,
-    theirs: RockPaperScissors,
-}
-
-impl Round {
-    fn from_file(filename: String) {
-        let _lines = std::fs::read_to_string(filename)
-            .expect("Unable to read elve's 🪨🗞️✂️ tactic!")
-            .lines()
-            .map(|l| {
-                let pair = l.split(" ").collect::<Vec<&str>>();
-                return Round {
-                    theirs: RockPaperScissors::from_string(pair.get(0).expect("Invalid line format!").to_string()).expect("Invalid line content!"),
-                    yours: RockPaperScissors::from_string(pair.get(1).expect("Invalid line format!").to_string()).expect("Invalid line content!"),
-                };
-            }).collect::<Vec<Round>>();
-        print!("")
-    }
-}
+use std::collections::HashMap;
 
 fn main() {
-    Round::from_file("input.txt".to_string());
-    println!("Hello, world!");
+    let predefined_your_scores = HashMap::from([
+        ("A X".to_string(), 4u32),
+        ("B Y".to_string(), 5u32),
+        ("C Z".to_string(), 6u32),
+        ("A Y".to_string(), 8u32),
+        ("A Z".to_string(), 3u32),
+        ("B X".to_string(), 1u32),
+        ("B Z".to_string(), 9u32),
+        ("C X".to_string(), 7u32),
+        ("C Y".to_string(), 2u32),
+    ]);
+
+    let mut score: u32 = 0;
+
+    let binding = std::fs::read_to_string("input.txt").expect("File not found");
+    let games = binding.lines();
+
+    for game in games {
+        if predefined_your_scores.contains_key(game) {
+            score += predefined_your_scores.get(game).unwrap();
+        }
+    }
+    
+    println!("{}", score)
 }
